@@ -65,10 +65,11 @@ public class frame extends JFrame {
             BufferedReader in = new BufferedReader(new FileReader("bestscore.txt"));
             String str;
             str = in.readLine();
-            bsc=Integer.valueOf(str);
+            bsc=Integer.parseInt(str);
             bscLabel.setText(String.valueOf(bsc));
             in.close();
         } catch (IOException e) {
+            throw new RuntimeException(e);
         }//程序启动时读取上一次的最高分显示在top
 
         
@@ -116,17 +117,15 @@ public class frame extends JFrame {
         lb1.setForeground(Color.white);
         jb1.setBorder(null);
 
-        jb1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loseflag=0;//重置游戏结束标记
-                reset();
-                cude();
-                p3.repaint();
-                p3.requestFocus();
-                sc=0;//分数归零
-                scLabel.setText(String.valueOf(sc));
-                
-            }
+        jb1.addActionListener(e -> {
+            loseflag=0;//重置游戏结束标记
+            reset();
+            cude();
+            p3.repaint();
+            p3.requestFocus();
+            sc=0;//分数归零
+            scLabel.setText(String.valueOf(sc));
+
         });//重新开始一局游戏
 
         return jb1;
@@ -144,14 +143,12 @@ public class frame extends JFrame {
         lb1.setForeground(Color.white);
         jb1.setBorder(null);
 
-        jb1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                copy(undoarr,arr);
-                sc-=deltasc;//减去这一步增加的分数
-                cude();
-                p3.repaint();
-                p3.requestFocus();//恢复备份的数组
-            }
+        jb1.addActionListener(e -> {
+            copy(undoarr,arr);
+            sc-=deltasc;//减去这一步增加的分数
+            cude();
+            p3.repaint();
+            p3.requestFocus();//恢复备份的数组
         });
 
 
@@ -200,72 +197,28 @@ public class frame extends JFrame {
                 img.setFont(f1);
                 img.setForeground(Color.white);
 
-                switch(arr[i][j]) {
-                    case 0:
-                    img.setBackground(new Color(0xd6f4f4));
-
-                    break;
-                    case 2:
-                    img.setBackground(new Color(0xa8f2f1));
-
-                    break;
-                    
-                    case 4:
-                    img.setBackground(new Color(0x65daee));
-                    break;
-
-                    case 8:
-                    img.setBackground(new Color(0x49a5f0));
-                    break;
-
-                    case 16:
-                    img.setBackground(new Color(0x7ca0f4));
-                    break;
-
-                    case 32:
-                    img.setBackground(new Color(0x3478d9));
-                    break;
-
-                    case 64:
-                    img.setBackground(new Color(0x637fc2));
-                    break;
-
-                    case 128:
-                    img.setBackground(new Color(0x3981bd));
-                    break;
-
-                    case 256:
-                    img.setBackground(new Color(0x1a5383));
-                    break;
-
-                    case 512:
-                    img.setBackground(new Color(0x5a63b2));
-                    break;
-
-                    case 1024:
-                    img.setBackground(new Color(0x3f78ff));
-                    break;
-
-                    case 2048:
-                    img.setBackground(new Color(0x5840ff));
-                    break;
-
-                    case 4096:
-                    img.setBackground(new Color(0x801ed2));
-                    break;
-
-                    case 8192:
-                    img.setBackground(new Color(0xb531ff));
-                    break;
-
-                    case 16384:
-                    Font f2 = new Font("Arial", Font.BOLD,30);
-                    img.setFont(f2);
-                    img.setBackground(new Color(0xcc16e3));
-                    break;
-
-                    default:
-                    
+                switch (arr[i][j]) {
+                    case 0 -> img.setBackground(new Color(0xd6f4f4));
+                    case 2 -> img.setBackground(new Color(0xa8f2f1));
+                    case 4 -> img.setBackground(new Color(0x65daee));
+                    case 8 -> img.setBackground(new Color(0x49a5f0));
+                    case 16 -> img.setBackground(new Color(0x7ca0f4));
+                    case 32 -> img.setBackground(new Color(0x3478d9));
+                    case 64 -> img.setBackground(new Color(0x637fc2));
+                    case 128 -> img.setBackground(new Color(0x3981bd));
+                    case 256 -> img.setBackground(new Color(0x1a5383));
+                    case 512 -> img.setBackground(new Color(0x5a63b2));
+                    case 1024 -> img.setBackground(new Color(0x3f78ff));
+                    case 2048 -> img.setBackground(new Color(0x5840ff));
+                    case 4096 -> img.setBackground(new Color(0x801ed2));
+                    case 8192 -> img.setBackground(new Color(0xb531ff));
+                    case 16384 -> {
+                        Font f2 = new Font("Arial", Font.BOLD, 30);
+                        img.setFont(f2);
+                        img.setBackground(new Color(0xcc16e3));
+                    }
+                    default -> {
+                    }
                 }
                 img.setBounds(5+j*100, 5+i*100, 90, 90);
                 p3.add(img);
@@ -288,6 +241,7 @@ public class frame extends JFrame {
                 out.close();
                 bscLabel.setText(String.valueOf(bsc));
             } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }//创建文件并记录最高分
 
@@ -339,63 +293,59 @@ public class frame extends JFrame {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			
-			switch (e.getKeyCode()) {
-			case KeyEvent.VK_UP:
-                check();
-                copy(arr, undoarr);//备份用来撤销的数组
-                int[][] temp1=new int[4][4];
-                copy(arr,temp1);
-				MOVE_UP(1);
-                if(!cmp(arr,temp1)){
-                    addcude();
-                }//比较移动前后数组的变化，若有变化则添加新块
-                cude();
-                p3.repaint();
 
-				break;
-			case KeyEvent.VK_DOWN:
-                check();
-                copy(arr, undoarr);
-                int[][] temp2=new int[4][4];
-                copy(arr,temp2);
-				MOVE_DOWN(1);
-                if(!cmp(arr,temp2)){
-                    addcude();
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_UP -> {
+                    copy(arr, undoarr);//备份用来撤销的数组
+                    int[][] temp1 = new int[4][4];
+                    copy(arr, temp1);
+                    MOVE_UP(1);
+                    if (ifEqual(arr, temp1)) {
+                        addcude();
+                    }//比较移动前后数组的变化，若有变化则添加新块
+                    check();
+                    cude();
+                    p3.repaint();
                 }
-                cude();
-                p3.repaint();
-
-				break;
-			case KeyEvent.VK_LEFT:
-                check();
-                copy(arr, undoarr);
-                int[][] temp3=new int[4][4];
-                copy(arr,temp3);
-				MOVE_LEFT(1);
-                if(!cmp(arr,temp3)){
-                    addcude();
+                case KeyEvent.VK_DOWN -> {
+                    copy(arr, undoarr);
+                    int[][] temp2 = new int[4][4];
+                    copy(arr, temp2);
+                    MOVE_DOWN(1);
+                    if (ifEqual(arr, temp2)) {
+                        addcude();
+                    }
+                    check();
+                    cude();
+                    p3.repaint();
                 }
-                cude();
-                p3.repaint();
-
-				break;
-			case KeyEvent.VK_RIGHT:
-                check();
-                copy(arr, undoarr);
-                int[][] temp4=new int[4][4];
-                copy(arr,temp4);
-				MOVE_RIGHT(1);
-                if(!cmp(arr,temp4)){
-                    addcude();
+                case KeyEvent.VK_LEFT -> {
+                    copy(arr, undoarr);
+                    int[][] temp3 = new int[4][4];
+                    copy(arr, temp3);
+                    MOVE_LEFT(1);
+                    if (ifEqual(arr, temp3)) {
+                        addcude();
+                    }
+                    check();
+                    cude();
+                    p3.repaint();
                 }
-                cude();
-                p3.repaint();
-
-				break;								
-			default:
-				break;
-			}						
+                case KeyEvent.VK_RIGHT -> {
+                    copy(arr, undoarr);
+                    int[][] temp4 = new int[4][4];
+                    copy(arr, temp4);
+                    MOVE_RIGHT(1);
+                    if (ifEqual(arr, temp4)) {
+                        addcude();
+                    }
+                    check();
+                    cude();
+                    p3.repaint();
+                }
+                default -> {
+                }
+            }
 		}		
 
 		@Override
@@ -414,40 +364,40 @@ public class frame extends JFrame {
 
     public boolean checkLeft() {//判断是否可以向左移动
         int[][] temp=new int[4][4];
-        boolean flag=true;
+        boolean flag;
         copy(arr,temp); 
         MOVE_LEFT(0);//向左移动，不计入分数
-        flag=!cmp(arr,temp);
+        flag= ifEqual(arr, temp);
         System.out.println("向左"+flag);
         copy(temp,arr);//还原数组
         return flag;
     }
     public boolean checkRight() {//判断是否可以向左移动
         int[][] temp=new int[4][4];
-        boolean flag=true;
+        boolean flag;
         copy(arr,temp); 
         MOVE_RIGHT(0);
-        flag=!cmp(arr,temp);
+        flag= ifEqual(arr, temp);
         System.out.println("向右"+flag);
         copy(temp,arr);
         return flag;
     }
     public boolean checkUp() {//判断是否可以向左移动
         int[][] temp=new int[4][4];
-        boolean flag=true;
+        boolean flag;
         copy(arr,temp); 
         MOVE_UP(0);
-        flag=!cmp(arr,temp);
+        flag= ifEqual(arr, temp);
         System.out.println("向上"+flag);
         copy(temp,arr);
         return flag;
     }
     public boolean checkDown() {//判断是否可以向左移动
         int[][] temp=new int[4][4];
-        boolean flag=true;
+        boolean flag;
         copy(arr,temp); 
         MOVE_DOWN(0);
-        flag=!cmp(arr,temp);
+        flag= ifEqual(arr, temp);
         System.out.println("向下"+flag);
         copy(temp,arr);
         return flag;
@@ -592,22 +542,20 @@ public class frame extends JFrame {
 
     void copy(int[][] a,int[][] b){
         for(int i=0;i<a.length;i++){
-            for(int j=0;j<a[i].length;j++){
-                b[i][j]=a[i][j];
-            }
+            System.arraycopy(a[i], 0, b[i], 0, a[i].length);
         }
     }//复制数组
 
 
-    boolean cmp(int[][] a,int[][] b){
+    boolean ifEqual(int[][] a, int[][] b){
         for(int j=0;j<4;j++){
             for(int i=0;i<4;i++){
                 if(a[j][i]!=b[j][i]){
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }//比较两个数组是否相同
 
     JPanel shadow1(){
