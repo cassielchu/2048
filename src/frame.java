@@ -16,10 +16,10 @@ public class frame extends JFrame {
         {8,4,2,4},
         {8,4,2,4}
     };
-    int[][] undoarr=new int[4][4];
+    int[][] undoArr =new int[4][4];
 
-    int sc=0,bsc,loseflag=0;
-    int deltasc=0;//每次移动增加的分数
+    int sc=0,bsc, loseFlag =0;
+    int deltaScore =0;//每次移动增加的分数
 
     JLabel scLabel=new JLabel(String.valueOf(sc));
     JLabel bscLabel=new JLabel(String.valueOf(bsc));
@@ -33,7 +33,7 @@ public class frame extends JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setTitle("2048");
         setBounds(screenSize.width/2-DEFAULT_WIDTH/2,screenSize.height/2-DEFAULT_HEIGHT/2,DEFAULT_WIDTH,DEFAULT_HEIGHT);
-        addKeyListener(new movecontrol());
+        addKeyListener(new moveControl());
         this.requestFocusInWindow(); 
         getContentPane().setBackground(new Color(0x69c8ce));
 
@@ -48,9 +48,9 @@ public class frame extends JFrame {
         this.setLayout(null);
         reset();
         p1=score();
-        p2=bestscore();
+        p2= bestScore();
         p3 =new JPanel();
-		p3.addKeyListener(new movecontrol());
+		p3.addKeyListener(new moveControl());
 		cude();
         this.add(p1);
         this.add(p2);
@@ -62,7 +62,7 @@ public class frame extends JFrame {
         this.add(shadow3());
 
         try {
-            BufferedReader in = new BufferedReader(new FileReader("bestscore.txt"));
+            BufferedReader in = new BufferedReader(new FileReader("bestScore.txt"));
             String str;
             str = in.readLine();
             bsc=Integer.parseInt(str);
@@ -89,7 +89,7 @@ public class frame extends JFrame {
         return jp1;
     }//分数面板
 
-    JPanel bestscore(){
+    JPanel bestScore(){
         JPanel jp1=new JPanel();
         jp1.setLayout(new FlowLayout(FlowLayout.LEFT,20,12));
         var lb1=new JLabel("TOP:");
@@ -118,7 +118,7 @@ public class frame extends JFrame {
         jb1.setBorder(null);
 
         jb1.addActionListener(e -> {
-            loseflag=0;//重置游戏结束标记
+            loseFlag =0;//重置游戏结束标记
             reset();
             cude();
             p3.repaint();
@@ -144,8 +144,8 @@ public class frame extends JFrame {
         jb1.setBorder(null);
 
         jb1.addActionListener(e -> {
-            copy(undoarr,arr);
-            sc-=deltasc;//减去这一步增加的分数
+            copy(undoArr,arr);
+            sc-= deltaScore;//减去这一步增加的分数
             cude();
             p3.repaint();
             p3.requestFocus();//恢复备份的数组
@@ -155,7 +155,7 @@ public class frame extends JFrame {
         return jb1;
     }//撤销按钮
 
-    JPanel losepanel(){
+    JPanel losePanel(){
         JPanel jp1=new JPanel();
         jp1.setLayout(null);
         jp1.setBounds(0,0, 400, 400);
@@ -180,8 +180,8 @@ public class frame extends JFrame {
 		p3.setBackground(new Color(0x91cfd3));//设置背景
 		p3.setBounds(20,150, 400, 400);	
 
-        if(loseflag==1){
-            p3.add(losepanel());
+        if(loseFlag ==1){
+            p3.add(losePanel());
         }
 
 
@@ -236,7 +236,7 @@ public class frame extends JFrame {
         if(sc>bsc){
             bsc=sc;
             try {
-                BufferedWriter out = new BufferedWriter(new FileWriter("bestscore.txt"));
+                BufferedWriter out = new BufferedWriter(new FileWriter("bestScore.txt"));
                 out.write(String.valueOf(bsc));
                 out.close();
                 bscLabel.setText(String.valueOf(bsc));
@@ -257,13 +257,13 @@ public class frame extends JFrame {
                 arr[i][j]=0;
             }
         }
-    addcude();
-    addcude();
-    copy(arr,undoarr);
+    addCude();
+    addCude();
+    copy(arr, undoArr);
     }//重置数组
 
 
-    void addcude(){
+    void addCude(){
         int[] x=new int[16];
         int[] y=new int[16];
         int n=0;//记录空的格子数；
@@ -284,7 +284,7 @@ public class frame extends JFrame {
 
     }//随机添加新数字
 
-    class movecontrol implements KeyListener{//添加键盘监听上下左右移动
+    class moveControl implements KeyListener{//添加键盘监听上下左右移动
 
         @Override
 		public void keyTyped(KeyEvent e) {
@@ -296,48 +296,48 @@ public class frame extends JFrame {
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_UP -> {
-                    copy(arr, undoarr);//备份用来撤销的数组
+                    copy(arr, undoArr);//备份用来撤销的数组
                     int[][] temp1 = new int[4][4];
                     copy(arr, temp1);
                     MOVE_UP(1);
                     if (ifEqual(arr, temp1)) {
-                        addcude();
+                        addCude();
                     }//比较移动前后数组的变化，若有变化则添加新块
                     check();
                     cude();
                     p3.repaint();
                 }
                 case KeyEvent.VK_DOWN -> {
-                    copy(arr, undoarr);
+                    copy(arr, undoArr);
                     int[][] temp2 = new int[4][4];
                     copy(arr, temp2);
                     MOVE_DOWN(1);
                     if (ifEqual(arr, temp2)) {
-                        addcude();
+                        addCude();
                     }
                     check();
                     cude();
                     p3.repaint();
                 }
                 case KeyEvent.VK_LEFT -> {
-                    copy(arr, undoarr);
+                    copy(arr, undoArr);
                     int[][] temp3 = new int[4][4];
                     copy(arr, temp3);
                     MOVE_LEFT(1);
                     if (ifEqual(arr, temp3)) {
-                        addcude();
+                        addCude();
                     }
                     check();
                     cude();
                     p3.repaint();
                 }
                 case KeyEvent.VK_RIGHT -> {
-                    copy(arr, undoarr);
+                    copy(arr, undoArr);
                     int[][] temp4 = new int[4][4];
                     copy(arr, temp4);
                     MOVE_RIGHT(1);
                     if (ifEqual(arr, temp4)) {
-                        addcude();
+                        addCude();
                     }
                     check();
                     cude();
@@ -356,7 +356,7 @@ public class frame extends JFrame {
 
     void check(){
         if(!checkLeft() && !checkRight() && !checkUp() && !checkDown()){
-            loseflag=1;
+            loseFlag =1;
             cude();
             p3.repaint();
         }
@@ -372,7 +372,7 @@ public class frame extends JFrame {
         copy(temp,arr);//还原数组
         return flag;
     }
-    public boolean checkRight() {//判断是否可以向左移动
+    public boolean checkRight() {
         int[][] temp=new int[4][4];
         boolean flag;
         copy(arr,temp); 
@@ -382,7 +382,7 @@ public class frame extends JFrame {
         copy(temp,arr);
         return flag;
     }
-    public boolean checkUp() {//判断是否可以向左移动
+    public boolean checkUp() {
         int[][] temp=new int[4][4];
         boolean flag;
         copy(arr,temp); 
@@ -392,7 +392,7 @@ public class frame extends JFrame {
         copy(temp,arr);
         return flag;
     }
-    public boolean checkDown() {//判断是否可以向左移动
+    public boolean checkDown() {
         int[][] temp=new int[4][4];
         boolean flag;
         copy(arr,temp); 
@@ -407,16 +407,15 @@ public class frame extends JFrame {
     void MOVE_LEFT(int a){
         int temp=0;
         for(int i=0;i<arr.length;i++) {
-            int[] newarr =new int[4];	//创建一个新的一维数组，
-            int index=0;				//在该数组的前面存放第i行的非0元素，0元素放到后面(系统默认值为0，所以不用管)
+            int[] newArr =new int[4];
+            int index=0;				
             for(int x=0;x<arr[i].length;x++) {
-                if(arr[i][x]!=0) {//不等于0的元素就先放进去
-                    newarr[index]=arr[i][x];
+                if(arr[i][x]!=0) {
+                    newArr[index]=arr[i][x];
                         index++;
                 }
-            }
-            arr[i]=newarr;//重新给arr[i]行				
-            //合并元素
+            }//在临时数组中按顺序添加arr[i]中的非0元素
+            arr[i]=newArr;//重新赋值给arr[i]行
             for(int x=0;x<3;x++) {
                 if(arr[i][x]==arr[i][x+1]) {//若该元素与后面的元素相同则合并
                     arr[i][x]*=2;
@@ -432,7 +431,7 @@ public class frame extends JFrame {
                     arr[i][3]=0;//最后再补0
                 }
             }		
-            deltasc=temp;
+            deltaScore =temp;
         }
         cude();
         p3.repaint();
@@ -441,15 +440,15 @@ public class frame extends JFrame {
     void MOVE_RIGHT(int a){
         int temp=0;
         for(int i=0;i<arr.length;i++) {
-            int[] newarr =new int[4];	
+            int[] newArr =new int[4];
             int index=3;
             for(int x=3;x>=0;x--) {
                 if(arr[i][x]!=0) {
-                    newarr[index]=arr[i][x];
+                    newArr[index]=arr[i][x];
                     index--;
                 }
             }
-            arr[i]=newarr;	
+            arr[i]=newArr;
             for(int x=3;x>0;x--) {
                 if(arr[i][x]==arr[i][x-1]) {
                     arr[i][x]*=2;
@@ -464,7 +463,7 @@ public class frame extends JFrame {
                     arr[i][0]=0;
                 }
             }	
-            deltasc=temp;							
+            deltaScore =temp;
         }
         cude();
         p3.repaint();
@@ -473,16 +472,16 @@ public class frame extends JFrame {
     void MOVE_UP(int a){
         int temp=0;
         for(int j=0;j<4;j++) {
-            int[] newarr =new int[4];
+            int[] newArr =new int[4];
             int index=0;			
             for(int x=0;x<4;x++) {
                 if(arr[x][j]!=0) {
-                    newarr[index]=arr[x][j];
+                    newArr[index]=arr[x][j];
                     index++;
                 }
             }	
             for(int n=0;n<4;n++) {
-                arr[n][j]=newarr[n];
+                arr[n][j]=newArr[n];
             }
             for(int x=0;x<3;x++) {
                 if(arr[x][j]==arr[x+1][j]) {
@@ -498,7 +497,7 @@ public class frame extends JFrame {
                     arr[3][j]=0;
                 }
             }	
-            deltasc=temp;							
+            deltaScore =temp;
         }
         cude();
         p3.repaint();
@@ -507,16 +506,16 @@ public class frame extends JFrame {
     void MOVE_DOWN(int a){
         int temp=0;
         for(int j=0;j<4;j++) {
-            int[] newarr =new int[4];	
+            int[] newArr =new int[4];
             int index=3;				
             for(int x=3;x>=0;x--) {
                 if(arr[x][j]!=0) {
-                    newarr[index]=arr[x][j];
+                    newArr[index]=arr[x][j];
                     index--;
                 }
             }
             for(int n=3;n>=0;n--) {
-                arr[n][j]=newarr[n];
+                arr[n][j]=newArr[n];
             }
             for(int x=3;x>0;x--) {
                 if(arr[x][j]==arr[x-1][j]) {
@@ -532,7 +531,7 @@ public class frame extends JFrame {
                     arr[0][j]=0;
                 }
             }	
-            deltasc=temp;							
+            deltaScore =temp;
         }
         cude();
         p3.repaint();
